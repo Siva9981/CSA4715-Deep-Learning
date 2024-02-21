@@ -1,0 +1,27 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix
+
+data = load_breast_cancer()
+X = data.data
+y = data.target
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_classifier.fit(X_train, y_train)
+
+y_pred = rf_classifier.predict(X_test)
+
+cm = confusion_matrix(y_test, y_pred)
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Greens", xticklabels=["Benign", "Malignant"], yticklabels=["Benign", "Malignant"])
+plt.xlabel('Predicted Labels')
+plt.ylabel('Actual Labels')
+plt.title('Confusion Matrix - Breast Cancer Dataset')
+plt.show()
