@@ -1,0 +1,24 @@
+import cv2
+import numpy as np
+from matplotlib import pyplot as plt
+
+image = cv2.imread('/content/download.jpg')
+
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+_, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+
+contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+markers = np.zeros_like(gray, dtype=np.int32)
+for i, contour in enumerate(contours):
+    cv2.drawContours(markers, [contour], 0, (i + 1), -1)
+
+cv2.watershed(image, markers)
+
+plt.subplot(121), plt.imshow(image, cmap='gray')
+plt.title('Original Image'), plt.xticks([]), plt.yticks([])
+
+plt.subplot(122), plt.imshow(markers, cmap='tab20b')
+plt.title('Segmented Image'), plt.xticks([]), plt.yticks([])
+
+plt.show()
